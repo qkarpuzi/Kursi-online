@@ -10,3 +10,15 @@ const config = {
     trustedConnection: true   // Pa keta nuk mundem me pas sql server me windows auth
     }
 };
+
+const poolPromise = new sql.ConnectionPool(config)
+.connect()
+.then(pool => {
+    console.log("Jemi lidhur me SQL Server");
+    return pool;
+})
+.catch(err => {
+    console.error("Ka deshtuar lidhja me SQL: ", err );
+    process.exit(1);
+});
+module.exports = {sql, poolPromise};
