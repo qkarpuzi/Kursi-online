@@ -2,164 +2,196 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Student Dashboard</title>
+    <title>ENAVO - Student</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f5f5f5; }
-        nav { background: #2c3e50; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        nav h1 { color: white; }
-        nav button { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
-        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        .section { background: white; border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        h2 { margin-bottom: 15px; }
-        .card { border: 1px solid #eee; border-radius: 5px; padding: 15px; margin-top: 10px; }
-        .card h3 { margin-bottom: 5px; }
-        button { padding: 8px 15px; background: #2c3e50; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 8px; }
-        .status { display: inline-block; padding: 3px 8px; border-radius: 10px; font-size: 0.8em; }
-        .pending { background: #f39c12; color: white; }
-        .accepted { background: #27ae60; color: white; }
-        .rejected { background: #e74c3c; color: white; }
-        a { color: #2c3e50; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; }
+        nav { background: #1a1a2e; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; }
+        nav .logo { color: white; font-size: 1.4em; font-weight: 700; letter-spacing: 2px; }
+        nav .logo span { color: #e94560; }
+        nav .right { display: flex; align-items: center; gap: 15px; }
+        nav .right p { color: #aaa; font-size: 0.9em; }
+        nav button { background: #e94560; color: white; border: none; padding: 8px 18px; border-radius: 20px; cursor: pointer; font-size: 0.9em; }
+
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; }
+        .tab { padding: 10px 22px; border-radius: 25px; border: 2px solid #e0e0e0; background: white; cursor: pointer; font-size: 0.9em; font-weight: 600; color: #888; transition: all 0.2s; }
+        .tab.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 12px; padding: 22px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+        .card h3 { font-size: 1em; margin-bottom: 6px; color: #1a1a2e; }
+        .card p { font-size: 0.87em; color: #888; margin-bottom: 12px; line-height: 1.5; }
+        .card small { color: #bbb; font-size: 0.8em; display: block; margin-bottom: 12px; }
+        .card a.go { display: inline-block; background: #1a1a2e; color: white; text-decoration: none; padding: 7px 16px; border-radius: 8px; font-size: 0.85em; }
+        .card a.go:hover { background: #e94560; }
+        .card button { padding: 8px 16px; background: #1a1a2e; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85em; }
+        .card button:hover { background: #e94560; }
+
+        .status { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 0.78em; font-weight: 600; margin-bottom: 10px; }
+        .accepted { background: #d4edda; color: #155724; }
+        .pending { background: #fff3cd; color: #856404; }
+        .rejected { background: #f8d7da; color: #721c24; }
+
+        .empty { color: #bbb; text-align: center; padding: 40px 0; font-size: 0.95em; }
+
         /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100; }
         .modal.open { display: flex; }
-        .modal-box { background: white; padding: 30px; border-radius: 8px; width: 500px; max-height: 80vh; overflow-y: auto; }
-        .modal-box h3 { margin-bottom: 15px; }
-        .question { margin-bottom: 15px; }
-        .question p { margin-bottom: 8px; font-weight: bold; }
-        .question label { display: block; margin-bottom: 4px; cursor: pointer; }
-        .modal-box button { width: 100%; margin-top: 10px; padding: 10px; }
+        .modal-box { background: white; padding: 35px; border-radius: 14px; width: 520px; max-height: 80vh; overflow-y: auto; }
+        .modal-box h3 { margin-bottom: 20px; font-size: 1.2em; color: #1a1a2e; }
+        .question { margin-bottom: 18px; }
+        .question p { margin-bottom: 10px; font-weight: 600; font-size: 0.95em; }
+        .question label { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; cursor: pointer; font-size: 0.9em; color: #444; padding: 8px 12px; border-radius: 8px; border: 1px solid #eee; transition: background 0.15s; }
+        .question label:hover { background: #f0f2f5; }
+        .modal-btns { display: flex; gap: 10px; margin-top: 15px; }
+        .modal-btns button { flex: 1; padding: 11px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95em; }
+        .modal-btns .submit { background: #1a1a2e; color: white; }
+        .modal-btns .submit:hover { background: #e94560; }
+        .modal-btns .cancel { background: #f0f2f5; color: #666; }
     </style>
 </head>
 <body>
-    <nav>
-        <h1>Student Dashboard</h1>
+<nav>
+    <div class="logo">EN<span>A</span>VO</div>
+    <div class="right">
+        <p>👤 <span id="userName"></span></p>
         <button onclick="logout()">Logout</button>
-    </nav>
-    <div class="container">
-        <div class="section">
-            <h2>My Enrolled Courses</h2>
-            <div id="myCourses">Loading...</div>
-        </div>
-        <div class="section">
-            <h2>All Available Courses</h2>
-            <div id="allCourses">Loading...</div>
-        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('mycourses', this)">🎓 My Courses</button>
+        <button class="tab" onclick="switchTab('browse', this)">🔍 Browse Courses</button>
     </div>
 
-    <!-- Apply Modal -->
-    <div class="modal" id="modal">
-        <div class="modal-box">
-            <h3>Apply to Course</h3>
-            <div id="questions"></div>
-            <button onclick="submitApplication()">Submit Application</button>
-            <button onclick="closeModal()" style="background:#999;margin-top:5px;">Cancel</button>
-        </div>
+    <div class="panel active" id="tab-mycourses">
+        <div class="grid" id="myCourses"><div class="empty">Loading...</div></div>
     </div>
 
-    <script>
-        const token = localStorage.getItem('token');
-        const user = JSON.parse(localStorage.getItem('user'));
-        let currentCourseId = null;
+    <div class="panel" id="tab-browse">
+        <div class="grid" id="allCourses"><div class="empty">Loading...</div></div>
+    </div>
+</div>
 
-        if (!token || !user || user.role !== 'student') {
-            window.location.href = '/login.html';
-        }
+<!-- Modal -->
+<div class="modal" id="modal">
+    <div class="modal-box">
+        <h3>Apply to Course</h3>
+        <div id="questions"></div>
+        <div class="modal-btns">
+            <button class="submit" onclick="submitApplication()">Submit Application</button>
+            <button class="cancel" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+</div>
 
-        function logout() {
-            localStorage.clear();
-            window.location.href = '/login.html';
-        }
+<script>
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user'));
+    let currentCourseId = null;
+    if (!token || !user || user.role !== 'student') window.location.href = '/login.html';
+    document.getElementById('userName').textContent = user.name;
 
-        async function loadMyCourses() {
-            const res = await fetch('/api/enrollments/mycourses', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const courses = await res.json();
-            const container = document.getElementById('myCourses');
-            if (!courses.length) { container.innerHTML = '<p>Not enrolled in any courses yet.</p>'; return; }
-            container.innerHTML = courses.map(c => `
-                <div class="card">
-                    <h3>${c.title}</h3>
-                    <p>${c.description || ''}</p>
-                    <small>By ${c.professor_name}</small><br>
-                    <a href="/student/course.html?id=${c.id}">View Course →</a>
-                </div>
-            `).join('');
-        }
+    function logout() { localStorage.clear(); window.location.href = '/login.html'; }
 
-       async function loadAllCourses() {
-    const [coursesRes, appsRes] = await Promise.all([
-        fetch('/api/courses'),
-        fetch('/api/enrollments/myapplications', { headers: { 'Authorization': 'Bearer ' + token } })
-    ]);
-    const courses = await coursesRes.json();
-    const apps = await appsRes.json();
-    const appMap = {};
-    apps.forEach(a => appMap[a.course_id] = a.status);
+    function switchTab(name, el) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('tab-' + name).classList.add('active');
+        el.classList.add('active');
+    }
 
-    const container = document.getElementById('allCourses');
-    if (!courses.length) { container.innerHTML = '<p>No courses available.</p>'; return; }
-    container.innerHTML = courses.map(c => {
-        const status = appMap[c.id];
-        let action = `<button onclick="openModal(${c.id})">Apply</button>`;
-        if (status === 'accepted') action = '<span style="color:green;">✓ Enrolled</span>';
-        if (status === 'pending') action = '<span style="color:orange;">⏳ Pending review</span>';
-        if (status === 'rejected') action = '<span style="color:red;">✗ Rejected</span>';
-        return `
+    async function loadMyCourses() {
+        const res = await fetch('/api/enrollments/mycourses', { headers: { 'Authorization': 'Bearer ' + token } });
+        const courses = await res.json();
+        const container = document.getElementById('myCourses');
+        if (!courses.length) { container.innerHTML = '<div class="empty">You are not enrolled in any courses yet.<br>Browse courses to apply!</div>'; return; }
+        container.innerHTML = courses.map(c => `
             <div class="card">
                 <h3>${c.title}</h3>
-                <p>${c.description || ''}</p>
-                <small>By ${c.professor_name}</small><br>
-                <div style="margin-top:8px;">${action}</div>
+                <p>${c.description || 'No description'}</p>
+                <small>By ${c.professor_name}</small>
+                <a href="/student/course.html?id=${c.id}" class="go">Open Course →</a>
             </div>
-        `;
-    }).join('');
-}
+        `).join('');
+    }
 
-        async function openModal(courseId) {
-            currentCourseId = courseId;
-            const res = await fetch('/api/enrollments/questions');
-            const questions = await res.json();
-            document.getElementById('questions').innerHTML = questions.map(q => `
-                <div class="question">
-                    <p>${q.question_text}</p>
-                    <label><input type="radio" name="q${q.id}" value="a"> ${q.option_a}</label>
-                    <label><input type="radio" name="q${q.id}" value="b"> ${q.option_b}</label>
-                    <label><input type="radio" name="q${q.id}" value="c"> ${q.option_c}</label>
-                    ${q.option_d ? `<label><input type="radio" name="q${q.id}" value="d"> ${q.option_d}</label>` : ''}
+    async function loadAllCourses() {
+        const [coursesRes, appsRes] = await Promise.all([
+            fetch('/api/courses'),
+            fetch('/api/enrollments/myapplications', { headers: { 'Authorization': 'Bearer ' + token } })
+        ]);
+        const courses = await coursesRes.json();
+        const apps = await appsRes.json();
+        const appMap = {};
+        apps.forEach(a => appMap[a.course_id] = a.status);
+
+        const container = document.getElementById('allCourses');
+        if (!courses.length) { container.innerHTML = '<div class="empty">No courses available yet.</div>'; return; }
+        container.innerHTML = courses.map(c => {
+            const status = appMap[c.id];
+            let action = `<button onclick="openModal(${c.id})">Apply Now</button>`;
+            if (status === 'accepted') action = '<span class="status accepted">✓ Enrolled</span>';
+            if (status === 'pending') action = '<span class="status pending">⏳ Pending Review</span>';
+            if (status === 'rejected') action = '<span class="status rejected">✗ Rejected</span>';
+            return `
+                <div class="card">
+                    <h3>${c.title}</h3>
+                    <p>${c.description || 'No description'}</p>
+                    <small>By ${c.professor_name}</small>
+                    ${action}
                 </div>
-            `).join('');
-            document.getElementById('modal').classList.add('open');
-        }
+            `;
+        }).join('');
+    }
 
-        function closeModal() {
-            document.getElementById('modal').classList.remove('open');
-            currentCourseId = null;
-        }
+    async function openModal(courseId) {
+        currentCourseId = courseId;
+        const res = await fetch('/api/enrollments/questions');
+        const questions = await res.json();
+        document.getElementById('questions').innerHTML = questions.map(q => `
+            <div class="question">
+                <p>${q.question_text}</p>
+                <label><input type="radio" name="q${q.id}" value="a"> ${q.option_a}</label>
+                <label><input type="radio" name="q${q.id}" value="b"> ${q.option_b}</label>
+                <label><input type="radio" name="q${q.id}" value="c"> ${q.option_c}</label>
+                ${q.option_d ? `<label><input type="radio" name="q${q.id}" value="d"> ${q.option_d}</label>` : ''}
+            </div>
+        `).join('');
+        document.getElementById('modal').classList.add('open');
+    }
 
-        async function submitApplication() {
-            const res = await fetch('/api/enrollments/questions');
-            const questions = await res.json();
-            const answers = [];
-            for (const q of questions) {
-                const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
-                if (!selected) { alert('Please answer all questions'); return; }
-                answers.push({ question_id: q.id, selected_option: selected.value });
-            }
-            const r = await fetch(`/api/enrollments/apply/${currentCourseId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-                body: JSON.stringify({ answers })
-            });
-            const data = await r.json();
-            alert(data.message);
-            closeModal();
-            loadMyCourses();
-        }
+    function closeModal() { document.getElementById('modal').classList.remove('open'); currentCourseId = null; }
 
-        loadMyCourses();
+    async function submitApplication() {
+        const res = await fetch('/api/enrollments/questions');
+        const questions = await res.json();
+        const answers = [];
+        for (const q of questions) {
+            const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+            if (!selected) { alert('Please answer all questions'); return; }
+            answers.push({ question_id: q.id, selected_option: selected.value });
+        }
+        const r = await fetch(`/api/enrollments/apply/${currentCourseId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify({ answers })
+        });
+        const data = await r.json();
+        alert(data.message);
+        closeModal();
         loadAllCourses();
-    </script>
+        loadMyCourses();
+    }
+
+    loadMyCourses();
+    loadAllCourses();
+</script>
 </body>
 </html>

@@ -2,186 +2,240 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Manage Course</title>
+    <title>ENAVO - Manage Course</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f5f5f5; }
-        nav { background: #2c3e50; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        nav h1 { color: white; }
-        nav a { color: white; text-decoration: none; }
-        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        .section { background: white; border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        h2 { margin-bottom: 15px; }
-        input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; }
-        button { padding: 10px 20px; background: #2c3e50; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px; }
-        .btn-green { background: #27ae60; }
-        .btn-red { background: #e74c3c; }
-        .card { border: 1px solid #eee; border-radius: 5px; padding: 15px; margin-top: 10px; }
-        .card h4 { margin-bottom: 5px; }
-        .answer { background: #f9f9f9; padding: 8px; margin-top: 5px; border-radius: 4px; font-size: 0.9em; }
-        .msg { color: green; margin-top: 10px; }
-        .status { display: inline-block; padding: 3px 8px; border-radius: 10px; font-size: 0.8em; }
-        .pending { background: #f39c12; color: white; }
-        .accepted { background: #27ae60; color: white; }
-        .rejected { background: #e74c3c; color: white; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; }
+        nav { background: #1a1a2e; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; }
+        nav .logo { color: white; font-size: 1.4em; font-weight: 700; letter-spacing: 2px; }
+        nav .logo span { color: #e94560; }
+        nav a { color: #aaa; text-decoration: none; font-size: 0.9em; }
+        nav a:hover { color: white; }
+
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+
+        .top-bar { background: white; border-radius: 12px; padding: 20px 25px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+        .top-bar h1 { font-size: 1.3em; color: #1a1a2e; }
+        .top-bar p { color: #888; font-size: 0.9em; }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; }
+        .tab { padding: 10px 22px; border-radius: 25px; border: 2px solid #e0e0e0; background: white; cursor: pointer; font-size: 0.9em; font-weight: 600; color: #888; transition: all 0.2s; }
+        .tab.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); margin-bottom: 20px; }
+        .card h2 { font-size: 1.05em; color: #1a1a2e; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid #f0f2f5; }
+
+        input, textarea { width: 100%; padding: 10px 14px; margin-bottom: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 0.95em; font-family: inherit; background: #fafafa; }
+        input:focus, textarea:focus { outline: none; border-color: #1a1a2e; background: white; }
+        .btn { padding: 10px 22px; background: #1a1a2e; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em; font-weight: 600; transition: background 0.2s; }
+        .btn:hover { background: #e94560; }
+        .btn-sm { padding: 6px 14px; font-size: 0.82em; border-radius: 6px; border: none; cursor: pointer; color: white; font-weight: 600; }
+        .btn-green { background: #27ae60; } .btn-green:hover { background: #1e8449; }
+        .btn-red { background: #e94560; } .btn-red:hover { background: #c0392b; }
+        .msg { font-size: 0.85em; color: #27ae60; margin-top: 8px; }
+
+        .item { border: 1px solid #eee; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+        .item h4 { margin-bottom: 5px; font-size: 0.95em; }
+        .item p { color: #777; font-size: 0.87em; margin-bottom: 6px; }
+        .item small { color: #bbb; font-size: 0.8em; }
+
+        .app-item { border: 1px solid #eee; border-radius: 10px; padding: 18px; margin-bottom: 12px; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .app-header h4 { font-size: 0.95em; }
+        .status { padding: 3px 10px; border-radius: 10px; font-size: 0.78em; font-weight: 600; }
+        .pending { background: #fff3cd; color: #856404; }
+        .accepted { background: #d4edda; color: #155724; }
+        .rejected { background: #f8d7da; color: #721c24; }
+        .answer { background: #f8f9fa; border-radius: 6px; padding: 8px 12px; margin-top: 6px; font-size: 0.85em; }
+        .answer strong { color: #1a1a2e; }
+        .app-actions { margin-top: 12px; display: flex; gap: 8px; }
+
+        .subs-list { margin-top: 10px; }
+        .sub-item { background: #f8f9fa; border-radius: 6px; padding: 10px 14px; margin-top: 8px; font-size: 0.87em; }
+        .sub-item strong { color: #1a1a2e; }
+        .empty { color: #bbb; text-align: center; padding: 25px 0; font-size: 0.9em; }
     </style>
 </head>
 <body>
-    <nav>
-        <h1 id="courseTitle">Course</h1>
-        <a href="/professor/dashboard.html">← Back</a>
-    </nav>
-    <div class="container">
+<nav>
+    <div class="logo">EN<span>A</span>VO</div>
+    <a href="/professor/dashboard.html">← Back to Dashboard</a>
+</nav>
 
-        <!-- Edit Course -->
-        <div class="section">
-            <h2>Edit Course</h2>
-            <input type="text" id="editTitle" placeholder="Course Title" />
-            <textarea id="editDesc" placeholder="Description" rows="3"></textarea>
-            <button onclick="updateCourse()">Save Changes</button>
-            <div class="msg" id="editMsg"></div>
+<div class="container">
+    <div class="top-bar">
+        <div>
+            <h1 id="courseTitle">Loading...</h1>
+            <p id="courseDesc"></p>
         </div>
+    </div>
 
-        <!-- Add Assignment -->
-        <div class="section">
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('assignments')">📋 Assignments</button>
+        <button class="tab" onclick="switchTab('applications')">👥 Applications</button>
+        <button class="tab" onclick="switchTab('settings')">⚙️ Settings</button>
+    </div>
+
+    <!-- ASSIGNMENTS -->
+    <div class="panel active" id="tab-assignments">
+        <div class="card">
             <h2>Add Assignment</h2>
             <input type="text" id="aTitle" placeholder="Assignment Title" />
             <textarea id="aDesc" placeholder="Description" rows="3"></textarea>
             <input type="date" id="aDue" />
             <input type="file" id="aFile" />
-            <button onclick="createAssignment()">Add Assignment</button>
+            <button class="btn" onclick="createAssignment()">Add Assignment</button>
             <div class="msg" id="assignMsg"></div>
         </div>
-
-        <!-- Assignments -->
-        <div class="section">
-            <h2>Assignments</h2>
-            <div id="assignments">Loading...</div>
+        <div class="card">
+            <h2>All Assignments</h2>
+            <div id="assignments"><div class="empty">Loading...</div></div>
         </div>
-
-        <!-- Applications -->
-        <div class="section">
-            <h2>Enrollment Applications</h2>
-            <div id="applications">Loading...</div>
-        </div>
-
     </div>
-    <script>
-        const token = localStorage.getItem('token');
-        const params = new URLSearchParams(window.location.search);
-        const courseId = params.get('id');
 
-        if (!token) window.location.href = '/login.html';
+    <!-- APPLICATIONS -->
+    <div class="panel" id="tab-applications">
+        <div class="card">
+            <h2>Enrollment Applications</h2>
+            <div id="applications"><div class="empty">Loading...</div></div>
+        </div>
+    </div>
 
-        async function loadCourse() {
-            const res = await fetch('/api/courses');
-            const courses = await res.json();
-            const course = courses.find(c => c.id == courseId);
-            if (course) {
-                document.getElementById('courseTitle').textContent = course.title;
-                document.getElementById('editTitle').value = course.title;
-                document.getElementById('editDesc').value = course.description || '';
-            }
+    <!-- SETTINGS -->
+    <div class="panel" id="tab-settings">
+        <div class="card">
+            <h2>Edit Course</h2>
+            <input type="text" id="editTitle" placeholder="Course Title" />
+            <textarea id="editDesc" placeholder="Description" rows="4"></textarea>
+            <button class="btn" onclick="updateCourse()">Save Changes</button>
+            <div class="msg" id="editMsg"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem('token');
+    const params = new URLSearchParams(window.location.search);
+    const courseId = params.get('id');
+    if (!token) window.location.href = '/login.html';
+
+    function switchTab(name) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('tab-' + name).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    async function loadCourse() {
+        const res = await fetch('/api/courses');
+        const courses = await res.json();
+        const course = courses.find(c => c.id == courseId);
+        if (course) {
+            document.getElementById('courseTitle').textContent = course.title;
+            document.getElementById('courseDesc').textContent = course.description || '';
+            document.getElementById('editTitle').value = course.title;
+            document.getElementById('editDesc').value = course.description || '';
         }
+    }
 
-        async function updateCourse() {
-            const title = document.getElementById('editTitle').value;
-            const description = document.getElementById('editDesc').value;
-            const res = await fetch(`/api/courses/${courseId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-                body: JSON.stringify({ title, description })
-            });
-            const data = await res.json();
-            document.getElementById('editMsg').textContent = data.message;
-        }
+    async function updateCourse() {
+        const res = await fetch(`/api/courses/${courseId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify({ title: document.getElementById('editTitle').value, description: document.getElementById('editDesc').value })
+        });
+        const data = await res.json();
+        document.getElementById('editMsg').textContent = data.message;
+        if (res.ok) loadCourse();
+    }
 
-        async function loadAssignments() {
-            const res = await fetch(`/api/assignments/${courseId}`, {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const assignments = await res.json();
-            const container = document.getElementById('assignments');
-            if (!assignments.length) { container.innerHTML = '<p>No assignments yet.</p>'; return; }
-            container.innerHTML = assignments.map(a => `
-                <div class="card">
-                    <h4>${a.title}</h4>
-                    <p>${a.description || ''}</p>
-                    ${a.due_date ? `<small>Due: ${new Date(a.due_date).toLocaleDateString()}</small>` : ''}
-                    <br><button onclick="loadSubmissions(${a.id}, this)" style="margin-top:10px;font-size:0.85em;padding:5px 10px;">View Submissions</button>
-                    <div id="subs_${a.id}"></div>
+    async function loadAssignments() {
+        const res = await fetch(`/api/assignments/${courseId}`, { headers: { 'Authorization': 'Bearer ' + token } });
+        const list = await res.json();
+        const container = document.getElementById('assignments');
+        if (!list.length) { container.innerHTML = '<div class="empty">No assignments yet.</div>'; return; }
+        container.innerHTML = list.map(a => `
+            <div class="item">
+                <h4>${a.title}</h4>
+                <p>${a.description || ''}</p>
+                ${a.due_date ? `<small>Due: ${new Date(a.due_date).toLocaleDateString()}</small>` : ''}
+                ${a.file_url ? `<br><a href="${a.file_url}" target="_blank" style="font-size:0.85em;color:#0f3460;">📎 Attachment</a>` : ''}
+                <br><button class="btn-sm btn-green" style="margin-top:10px;" onclick="loadSubmissions(${a.id})">View Submissions</button>
+                <div class="subs-list" id="subs_${a.id}"></div>
+            </div>
+        `).join('');
+    }
+
+    async function loadSubmissions(assignmentId) {
+        const res = await fetch(`/api/assignments/submissions/${assignmentId}`, { headers: { 'Authorization': 'Bearer ' + token } });
+        const subs = await res.json();
+        const container = document.getElementById(`subs_${assignmentId}`);
+        if (!subs.length) { container.innerHTML = '<div class="empty">No submissions yet.</div>'; return; }
+        container.innerHTML = subs.map(s => `
+            <div class="sub-item">
+                <strong>${s.student_name}</strong> — ${s.student_email}<br>
+                ${s.text_response ? `<p style="margin-top:4px;">${s.text_response}</p>` : ''}
+                ${s.file_url ? `<a href="${s.file_url}" target="_blank">📎 View File</a>` : ''}
+            </div>
+        `).join('');
+    }
+
+    async function createAssignment() {
+        const formData = new FormData();
+        formData.append('title', document.getElementById('aTitle').value);
+        formData.append('description', document.getElementById('aDesc').value);
+        formData.append('due_date', document.getElementById('aDue').value);
+        const file = document.getElementById('aFile').files[0];
+        if (file) formData.append('file', file);
+        const res = await fetch(`/api/assignments/${courseId}`, {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token },
+            body: formData
+        });
+        const data = await res.json();
+        document.getElementById('assignMsg').textContent = data.message;
+        if (res.ok) { document.getElementById('aTitle').value = ''; document.getElementById('aDesc').value = ''; loadAssignments(); }
+    }
+
+    async function loadApplications() {
+        const res = await fetch(`/api/enrollments/applications/${courseId}`, { headers: { 'Authorization': 'Bearer ' + token } });
+        const apps = await res.json();
+        const container = document.getElementById('applications');
+        if (!apps.length) { container.innerHTML = '<div class="empty">No applications yet.</div>'; return; }
+        container.innerHTML = apps.map(a => `
+            <div class="app-item">
+                <div class="app-header">
+                    <h4>👤 ${a.student_name} <span style="color:#888;font-weight:400;font-size:0.9em;">${a.student_email}</span></h4>
+                    <span class="status ${a.status}">${a.status}</span>
                 </div>
-            `).join('');
-        }
+                ${a.answers.map(ans => `
+                    <div class="answer"><strong>${ans.question_text}</strong><br>${ans.answer_text}</div>
+                `).join('')}
+                ${a.status === 'pending' ? `
+                    <div class="app-actions">
+                        <button class="btn-sm btn-green" onclick="review(${a.application_id}, 'accepted')">✓ Accept</button>
+                        <button class="btn-sm btn-red" onclick="review(${a.application_id}, 'rejected')">✗ Reject</button>
+                    </div>
+                ` : ''}
+            </div>
+        `).join('');
+    }
 
-        async function loadSubmissions(assignmentId, btn) {
-            const res = await fetch(`/api/assignments/submissions/${assignmentId}`, {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const subs = await res.json();
-            const container = document.getElementById(`subs_${assignmentId}`);
-            if (!subs.length) { container.innerHTML = '<p>No submissions yet.</p>'; return; }
-            container.innerHTML = subs.map(s => `
-                <div class="answer">
-                    <strong>${s.student_name}</strong><br>
-                    ${s.text_response ? `<p>${s.text_response}</p>` : ''}
-                    ${s.file_url ? `<a href="${s.file_url}" target="_blank">View File</a>` : ''}
-                </div>
-            `).join('');
-        }
+    async function review(applicationId, status) {
+        const res = await fetch(`/api/enrollments/review/${applicationId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify({ status })
+        });
+        if (res.ok) loadApplications();
+    }
 
-        async function createAssignment() {
-            const formData = new FormData();
-            formData.append('title', document.getElementById('aTitle').value);
-            formData.append('description', document.getElementById('aDesc').value);
-            formData.append('due_date', document.getElementById('aDue').value);
-            const file = document.getElementById('aFile').files[0];
-            if (file) formData.append('file', file);
-
-            const res = await fetch(`/api/assignments/${courseId}`, {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token },
-                body: formData
-            });
-            const data = await res.json();
-            document.getElementById('assignMsg').textContent = data.message;
-            if (res.ok) loadAssignments();
-        }
-
-        async function loadApplications() {
-            const res = await fetch(`/api/enrollments/applications/${courseId}`, {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const apps = await res.json();
-            const container = document.getElementById('applications');
-            if (!apps.length) { container.innerHTML = '<p>No applications yet.</p>'; return; }
-            container.innerHTML = apps.map(a => `
-                <div class="card">
-                    <h4>${a.student_name} <span class="status ${a.status}">${a.status}</span></h4>
-                    <p>${a.student_email}</p>
-                    ${a.answers.map(ans => `
-                        <div class="answer"><strong>${ans.question_text}</strong><br>${ans.answer_text}</div>
-                    `).join('')}
-                    ${a.status === 'pending' ? `
-                        <button class="btn-green" onclick="review(${a.application_id}, 'accepted')">Accept</button>
-                        <button class="btn-red" onclick="review(${a.application_id}, 'rejected')">Reject</button>
-                    ` : ''}
-                </div>
-            `).join('');
-        }
-
-        async function review(applicationId, status) {
-            const res = await fetch(`/api/enrollments/review/${applicationId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-                body: JSON.stringify({ status })
-            });
-            if (res.ok) loadApplications();
-        }
-
-        loadCourse();
-        loadAssignments();
-        loadApplications();
-    </script>
+    loadCourse();
+    loadAssignments();
+    loadApplications();
+</script>
 </body>
 </html>
