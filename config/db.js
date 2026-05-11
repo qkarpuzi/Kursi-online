@@ -1,24 +1,19 @@
-const sql = require('mssql');
+const sql = require('mssql/msnodesqlv8');
 require('dotenv').config();
 
 const config = {
-    server: process.env.DB_SERVER,
-    database: process.env.DB_NAME,
-    options: {
-    encrypt: false,
-    trustServerCertificate: true,
-    trustedConnection: true   // Pa keta nuk mundem me pas sql server me windows auth
-    }
+    connectionString: `Server=${process.env.DB_SERVER};Database=${process.env.DB_NAME};Trusted_Connection=Yes;Driver={SQL Server Native Client 11.0};`
 };
 
 const poolPromise = new sql.ConnectionPool(config)
-.connect()
-.then(pool => {
-    console.log("Jemi lidhur me SQL Server");
-    return pool;
-})
-.catch(err => {
-    console.error("Ka deshtuar lidhja me SQL: ", err );
-    process.exit(1);
-});
-module.exports = {sql, poolPromise};
+    .connect()
+    .then(pool => {
+        console.log('Connected to SQL Server');
+        return pool;
+    })
+    .catch(err => {
+        console.error('Ka deshtuar lidhja me SQL: ', err);
+        process.exit(1);
+    });
+
+module.exports = { sql, poolPromise };
