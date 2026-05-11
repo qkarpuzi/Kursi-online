@@ -6,6 +6,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json()); //E Lejon express me i lexo requestat e JSON bodies
+app.use(express.static('public'));
 
 //Routes ose Rruget
 app.use('/uploads', express.static('uploads'));

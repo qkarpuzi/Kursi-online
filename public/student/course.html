@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        nav { background: #2c3e50; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        nav h1 { color: white; }
+        nav a { color: white; text-decoration: none; }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .section { background: white; border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h2 { margin-bottom: 15px; }
+        .card { border: 1px solid #eee; border-radius: 5px; padding: 15px; margin-top: 10px; }
+        .card h4 { margin-bottom: 5px; }
+        textarea, input[type="file"] { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 8px 15px; background: #2c3e50; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .msg { color: green; margin-top: 8px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1 id="courseTitle">Course</h1>
+        <a href="/student/dashboard.html">← Back</a>
+    </nav>
+    <div class="container">
+        <div class="section">
+            <h2>Assignments</h2>
+            <div id="assignments">Loading...</div>
+        </div>
+    </div>
+    <script>
+        const token = localStorage.getItem('token');
+        const params = new URLSearchParams(window.location.search);
+        const courseId = params.get('id');
+
+        if (!token) window.location.href = '/login.html';
+
+        async function loadCourse() {
+            const res = await fetch('/api/courses');
+            const courses = await res.json();
+            const course = courses.find(c => c.id == courseId);
+            if (course) document.getElementById('courseTitle').textContent = course.title;
+        }
+
+        async function loadAssignments() {
+            const res = await fetch(`/api/assignments/${courseId}`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const assignments = await res.json();
+            const container = document.getElementById('assignments');
+            if (!assignments.length) { container.innerHTML = '<p>No assignments yet.</p>'; return; }
+            container.innerHTML = assignments.map(a => `
+                <div class="card">
+                    <h4>${a.title}</h4>
+                    <p>${a.description || ''}</p>
+                    ${a.due_date ? `<small>Due: ${new Date(a.due_date).toLocaleDateString()}</small>` : ''}
+                    ${a.file_url ? `<br><a href="${a.file_url}" target="_blank">Download File</a>` : ''}
+                    <div style="margin-top:10px;">
+                        <textarea id="text_${a.id}" placeholder="Your answer..." rows="3"></textarea>
+                        <input type="file" id="file_${a.id}" />
+                        <button onclick="submit(${a.id})">Submit</button>
+                        <div class="msg" id="msg_${a.id}"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function submit(assignmentId) {
+            const formData = new FormData();
+            const text = document.getElementById(`text_${assignmentId}`).value;
+            const file = document.getElementById(`file_${assignmentId}`).files[0];
+            if (text) formData.append('text_response', text);
+            if (file) formData.append('file', file);
+
+            const res = await fetch(`/api/assignments/submit/${assignmentId}`, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                body: formData
+            });
+            const data = await res.json();
+            document.getElementById(`msg_${assignmentId}`).textContent = data.message;
+        }
+
+        loadCourse();
+        loadAssignments();
+    </script>
+</body>
+</html>

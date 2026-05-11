@@ -177,6 +177,21 @@ router.put('/review/:applicationId', auth, async (req, res) => {
     }
 });
 
+// GET /api/enrollments/myapplications - student sees their own applications
+router.get('/myapplications', auth, async (req, res) => {
+    if (req.user.role !== 'student') return res.status(403).json({ message: 'Students only' });
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('student_id', sql.Int, req.user.id)
+            .query('SELECT course_id, status FROM enrollment_applications WHERE student_id = @student_id');
+        res.json(result.recordset);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 // GET /api/enrollments/mycourses - student sees courses they were accepted to
 router.get('/mycourses', auth, async (req, res) => {
     if (req.user.role !== 'student') {

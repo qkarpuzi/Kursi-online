@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .box { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { margin-bottom: 20px; text-align: center; }
+        input, select { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        button { width: 100%; padding: 10px; background: #2c3e50; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .msg { text-align: center; margin-top: 10px; color: red; }
+        a { display: block; text-align: center; margin-top: 10px; color: #2c3e50; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Register</h2>
+        <input type="text" id="name" placeholder="Full Name" />
+        <input type="email" id="email" placeholder="Email" />
+        <input type="password" id="password" placeholder="Password" />
+        <select id="role">
+            <option value="student">Student</option>
+            <option value="professor">Professor</option>
+        </select>
+        <button onclick="register()">Register</button>
+        <div class="msg" id="msg"></div>
+        <a href="/login.html">Already have an account? Login</a>
+    </div>
+    <script>
+        async function register() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password, role })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                window.location.href = '/login.html';
+            } else {
+                document.getElementById('msg').textContent = data.message;
+            }
+        }
+    </script>
+</body>
+</html>

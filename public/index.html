@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ENAVO</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8f9fa; color: #222; }
+
+        /* NAV */
+        nav { background: #1a1a2e; padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; }
+        nav .logo { color: white; font-size: 1.6em; font-weight: 700; letter-spacing: 2px; }
+        nav .logo span { color: #e94560; }
+        nav .links a { color: #ccc; text-decoration: none; margin-left: 20px; font-size: 0.95em; transition: color 0.2s; }
+        nav .links a:hover { color: white; }
+        nav .links .btn-nav { background: #e94560; color: white; padding: 8px 18px; border-radius: 20px; }
+        nav .links .btn-nav:hover { background: #c73652; }
+
+        /* HERO */
+        .hero { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); color: white; padding: 100px 40px; text-align: center; }
+        .hero h1 { font-size: 3em; margin-bottom: 15px; }
+        .hero h1 span { color: #e94560; }
+        .hero p { font-size: 1.2em; color: #aaa; max-width: 600px; margin: 0 auto 35px; }
+        .hero-btns a { display: inline-block; padding: 14px 30px; border-radius: 25px; text-decoration: none; font-weight: 600; margin: 0 8px; }
+        .btn-primary { background: #e94560; color: white; }
+        .btn-primary:hover { background: #c73652; }
+        .btn-secondary { border: 2px solid white; color: white; }
+        .btn-secondary:hover { background: white; color: #1a1a2e; }
+
+        /* STATS */
+        .stats { background: white; display: flex; justify-content: center; gap: 60px; padding: 40px; border-bottom: 1px solid #eee; }
+        .stat { text-align: center; }
+        .stat h3 { font-size: 2em; color: #e94560; }
+        .stat p { color: #666; font-size: 0.9em; }
+
+        /* COURSES */
+        .courses-section { padding: 60px 40px; max-width: 1200px; margin: 0 auto; }
+        .courses-section h2 { font-size: 1.8em; margin-bottom: 8px; }
+        .courses-section p { color: #666; margin-bottom: 30px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+        .card-tag { background: #f0f4ff; color: #0f3460; font-size: 0.75em; padding: 4px 10px; border-radius: 10px; display: inline-block; margin-bottom: 10px; }
+        .card h3 { font-size: 1.1em; margin-bottom: 8px; }
+        .card p { color: #666; font-size: 0.9em; margin-bottom: 15px; line-height: 1.5; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 12px; }
+        .card-footer small { color: #999; }
+        .card-footer a { background: #1a1a2e; color: white; padding: 7px 16px; border-radius: 15px; text-decoration: none; font-size: 0.85em; }
+        .card-footer a:hover { background: #e94560; }
+
+        /* HOW IT WORKS */
+        .how { background: #1a1a2e; color: white; padding: 60px 40px; text-align: center; }
+        .how h2 { font-size: 1.8em; margin-bottom: 40px; }
+        .steps { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+        .step { max-width: 220px; }
+        .step .icon { font-size: 2.5em; margin-bottom: 12px; }
+        .step h4 { margin-bottom: 8px; color: #e94560; }
+        .step p { color: #aaa; font-size: 0.9em; }
+
+        /* FOOTER */
+        footer { background: #111; color: #666; text-align: center; padding: 25px; font-size: 0.9em; }
+        footer span { color: #e94560; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">EN<span>A</span>VO</div>
+    <div class="links">
+        <a href="#courses">Courses</a>
+        <a href="/login.html">Login</a>
+        <a href="/register.html" class="btn-nav">Get Started</a>
+    </div>
+</nav>
+
+<div class="hero">
+    <h1>Learn Without <span>Limits</span></h1>
+    <p>ENAVO connects students with expert professors. Enroll in courses, submit homework, and grow your skills.</p>
+    <div class="hero-btns">
+        <a href="/register.html" class="btn-primary">Start Learning</a>
+        <a href="#courses" class="btn-secondary">Browse Courses</a>
+    </div>
+</div>
+
+<div class="stats">
+    <div class="stat"><h3 id="courseCount">0</h3><p>Courses Available</p></div>
+    <div class="stat"><h3>100%</h3><p>Online & Free</p></div>
+    <div class="stat"><h3>24/7</h3><p>Access Anytime</p></div>
+</div>
+
+<div class="courses-section" id="courses">
+    <h2>Latest Courses</h2>
+    <p>Browse all available courses and apply to enroll</p>
+    <div class="grid" id="courseGrid">Loading...</div>
+</div>
+
+<div class="how">
+    <h2>How ENAVO Works</h2>
+    <div class="steps">
+        <div class="step">
+            <div class="icon">📝</div>
+            <h4>1. Register</h4>
+            <p>Create your student account in seconds</p>
+        </div>
+        <div class="step">
+            <div class="icon">🔍</div>
+            <h4>2. Browse</h4>
+            <p>Explore courses created by professors</p>
+        </div>
+        <div class="step">
+            <div class="icon">✅</div>
+            <h4>3. Apply</h4>
+            <p>Answer a few questions and apply to enroll</p>
+        </div>
+        <div class="step">
+            <div class="icon">🎓</div>
+            <h4>4. Learn</h4>
+            <p>Access assignments and submit homework</p>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>© 2026 <span>ENAVO</span> — Built for learning</p>
+</footer>
+
+<script>
+    fetch('/api/courses')
+        .then(r => r.json())
+        .then(courses => {
+            document.getElementById('courseCount').textContent = courses.length;
+            const grid = document.getElementById('courseGrid');
+            if (!courses.length) {
+                grid.innerHTML = '<p>No courses yet. Check back soon!</p>';
+                return;
+            }
+            grid.innerHTML = courses.map(c => `
+                <div class="card">
+                    <span class="card-tag">Course</span>
+                    <h3>${c.title}</h3>
+                    <p>${c.description || 'No description provided.'}</p>
+                    <div class="card-footer">
+                        <small>By ${c.professor_name}</small>
+                        <a href="/login.html">Enroll →</a>
+                    </div>
+                </div>
+            `).join('');
+        });
+</script>
+</body>
+</html>

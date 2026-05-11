@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Professor Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        nav { background: #2c3e50; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        nav h1 { color: white; }
+        nav button { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .section { background: white; border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h2 { margin-bottom: 15px; }
+        input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px 20px; background: #2c3e50; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .card { border: 1px solid #eee; border-radius: 5px; padding: 15px; margin-top: 10px; }
+        .card h3 { margin-bottom: 5px; }
+        .card a { color: #2c3e50; text-decoration: none; font-size: 0.9em; }
+        .msg { color: green; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>Professor Dashboard</h1>
+        <button onclick="logout()">Logout</button>
+    </nav>
+    <div class="container">
+        <div class="section">
+            <h2>Create New Course</h2>
+            <input type="text" id="title" placeholder="Course Title" />
+            <textarea id="description" placeholder="Description" rows="3"></textarea>
+            <button onclick="createCourse()">Create Course</button>
+            <div class="msg" id="msg"></div>
+        </div>
+        <div class="section">
+            <h2>My Courses</h2>
+            <div id="courses">Loading...</div>
+        </div>
+    </div>
+    <script>
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (!token || !user || user.role !== 'professor') {
+            window.location.href = '/login.html';
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/login.html';
+        }
+
+        async function loadCourses() {
+            const res = await fetch('/api/courses', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const courses = await res.json();
+            const mine = courses.filter(c => c.professor_name === user.name);
+            const container = document.getElementById('courses');
+            if (mine.length === 0) {
+                container.innerHTML = '<p>No courses yet.</p>';
+                return;
+            }
+            container.innerHTML = mine.map(c => `
+                <div class="card">
+                    <h3>${c.title}</h3>
+                    <p>${c.description || ''}</p>
+                    <a href="/professor/course.html?id=${c.id}">Manage Course →</a>
+                </div>
+            `).join('');
+        }
+
+        async function createCourse() {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const res = await fetch('/api/courses', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ title, description })
+            });
+            const data = await res.json();
+            document.getElementById('msg').textContent = data.message;
+            if (res.ok) loadCourses();
+        }
+
+        loadCourses();
+    </script>
+</body>
+</html>
