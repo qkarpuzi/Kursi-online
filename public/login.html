@@ -2,48 +2,189 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Course Portal</title>
     <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .box { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        h2 { margin-bottom: 20px; text-align: center; }
-        input { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; }
-        button { width: 100%; padding: 10px; background: #2c3e50; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        .msg { text-align: center; margin-top: 10px; color: red; }
-        a { display: block; text-align: center; margin-top: 10px; color: #2c3e50; }
+
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            background: var(--bg); 
+            color: var(--text-main);
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+            padding: 20px;
+        }
+
+        /* Home Button - Fixed to Top Left */
+        .home-nav {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        .home-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s;
+        }
+        .home-link:hover { color: var(--primary); }
+
+        .box { 
+            background: var(--card-bg); 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); 
+            width: 100%; 
+            max-width: 400px; 
+            border: 1px solid var(--border);
+        }
+
+        h2 { 
+            margin-bottom: 8px; 
+            text-align: center; 
+            font-size: 1.75rem;
+            color: var(--text-main);
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 20px; 
+            border: 1px solid var(--border); 
+            border-radius: 8px; 
+            font-family: inherit;
+            background: #fcfcfd;
+            transition: border 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+        button:hover { background: var(--primary-hover); }
+
+        .msg { 
+            text-align: center; 
+            margin-top: 15px; 
+            color: #dc2626; 
+            font-size: 0.85rem;
+            min-height: 1.2rem;
+        }
+
+        .footer-links {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .footer-links a { 
+            font-size: 0.9rem;
+            color: var(--primary); 
+            text-decoration: none; 
+            font-weight: 500;
+        }
+        .footer-links a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2>Login</h2>
-        <input type="email" id="email" placeholder="Email" />
-        <input type="password" id="password" placeholder="Password" />
-        <button onclick="login()">Login</button>
-        <div class="msg" id="msg"></div>
-        <a href="/register.html">Don't have an account? Register</a>
+
+    <div class="home-nav">
+        <a href="/" class="home-link">← Go Home</a>
     </div>
+
+    <div class="box">
+        <h2>Welcome back</h2>
+        <p class="subtitle">Enter your details to access your courses</p>
+        
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="name@example.com" />
+        
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="••••••••" />
+        
+        <button onclick="login()">Sign In</button>
+        
+        <div class="msg" id="msg"></div>
+        
+        <div class="footer-links">
+            <a href="/register.html">Don't have an account? Register</a>
+        </div>
+    </div>
+
     <script>
+        // Backend logic preserved exactly
         async function login() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const msgElement = document.getElementById('msg');
 
-            const res = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-            const data = await res.json();
-            if (res.ok) {
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('user', JSON.stringify(data.user));
-                if (data.user.role === 'professor') {
-                    window.location.href = '/professor/dashboard.html';
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    if (data.user.role === 'professor') {
+                        window.location.href = '/professor/dashboard.html';
+                    } else {
+                        window.location.href = '/student/dashboard.html';
+                    }
                 } else {
-                    window.location.href = '/student/dashboard.html';
+                    msgElement.textContent = data.message;
                 }
-            } else {
-                document.getElementById('msg').textContent = data.message;
+            } catch (err) {
+                msgElement.textContent = "Connection error. Please try again.";
             }
         }
     </script>

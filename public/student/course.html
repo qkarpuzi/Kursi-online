@@ -2,35 +2,160 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Course</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Dashboard</title>
     <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f5f5f5; }
-        nav { background: #2c3e50; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        nav h1 { color: white; }
-        nav a { color: white; text-decoration: none; }
-        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        .section { background: white; border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        h2 { margin-bottom: 15px; }
-        .card { border: 1px solid #eee; border-radius: 5px; padding: 15px; margin-top: 10px; }
-        .card h4 { margin-bottom: 5px; }
-        textarea, input[type="file"] { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; }
-        button { padding: 8px 15px; background: #2c3e50; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        .msg { color: green; margin-top: 8px; }
+        
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            background: var(--bg); 
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        nav { 
+            background: white; 
+            padding: 1rem 2rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        nav h1 { font-size: 1.25rem; font-weight: 700; color: var(--primary); }
+        
+        nav a { 
+            color: var(--text-muted); 
+            text-decoration: none; 
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        nav a:hover { color: var(--primary); }
+
+        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+
+        .section-header {
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .section-header h2 { font-size: 1.5rem; color: var(--text-main); }
+
+        /* Assignment Card Styling */
+        .card { 
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px; 
+            padding: 24px; 
+            margin-bottom: 20px; 
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h4 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-main); }
+        .card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 12px; }
+        
+        .due-date {
+            display: inline-block;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .download-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* Form Elements */
+        textarea { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 15px 0 10px 0; 
+            border: 1px solid var(--border); 
+            border-radius: 8px; 
+            font-family: inherit;
+            resize: vertical;
+            background: #fcfcfd;
+        }
+        textarea:focus {
+            outline: 2px solid #e0e7ff;
+            border-color: var(--primary);
+        }
+
+        input[type="file"] { 
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+            color: var(--text-muted);
+        }
+
+        button { 
+            width: 100%;
+            padding: 10px 20px; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        button:hover { background: var(--primary-hover); }
+
+        .msg { 
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+            margin-top: 12px; 
+            min-height: 1.2rem;
+        }
     </style>
 </head>
 <body>
     <nav>
         <h1 id="courseTitle">Course</h1>
-        <a href="/student/dashboard.html">← Back</a>
+        <a href="/student/dashboard.html">← Back to Dashboard</a>
     </nav>
+
     <div class="container">
-        <div class="section">
+        <div class="section-header">
             <h2>Assignments</h2>
-            <div id="assignments">Loading...</div>
+        </div>
+        <div id="assignments">
+            <p style="text-align: center; color: var(--text-muted);">Fetching your assignments...</p>
         </div>
     </div>
+
     <script>
+        // JS remains identical to keep backend compatibility
         const token = localStorage.getItem('token');
         const params = new URLSearchParams(window.location.search);
         const courseId = params.get('id');
@@ -50,17 +175,28 @@
             });
             const assignments = await res.json();
             const container = document.getElementById('assignments');
-            if (!assignments.length) { container.innerHTML = '<p>No assignments yet.</p>'; return; }
+            
+            if (!assignments.length) { 
+                container.innerHTML = '<p style="color: #64748b;">No assignments posted for this course yet.</p>'; 
+                return; 
+            }
+
             container.innerHTML = assignments.map(a => `
                 <div class="card">
-                    <h4>${a.title}</h4>
-                    <p>${a.description || ''}</p>
-                    ${a.due_date ? `<small>Due: ${new Date(a.due_date).toLocaleDateString()}</small>` : ''}
-                    ${a.file_url ? `<br><a href="${a.file_url}" target="_blank">Download File</a>` : ''}
-                    <div style="margin-top:10px;">
-                        <textarea id="text_${a.id}" placeholder="Your answer..." rows="3"></textarea>
-                        <input type="file" id="file_${a.id}" />
-                        <button onclick="submit(${a.id})">Submit</button>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <h4>${a.title}</h4>
+                        ${a.due_date ? `<span class="due-date">Due: ${new Date(a.due_date).toLocaleDateString()}</span>` : ''}
+                    </div>
+                    <p>${a.description || 'No description provided.'}</p>
+                    
+                    ${a.file_url ? `<a href="${a.file_url}" target="_blank" class="download-link">📎 Download Resource</a>` : ''}
+                    
+                    <div style="margin-top:10px; border-top: 1px solid #f1f5f9; pt-4">
+                        <textarea id="text_${a.id}" placeholder="Type your response here..." rows="3"></textarea>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <input type="file" id="file_${a.id}" />
+                            <button onclick="submit(${a.id})">Submit Assignment</button>
+                        </div>
                         <div class="msg" id="msg_${a.id}"></div>
                     </div>
                 </div>
@@ -68,19 +204,30 @@
         }
 
         async function submit(assignmentId) {
+            const msgDiv = document.getElementById(`msg_${assignmentId}`);
+            msgDiv.textContent = "Uploading...";
+            msgDiv.style.color = "var(--text-muted)";
+
             const formData = new FormData();
             const text = document.getElementById(`text_${assignmentId}`).value;
             const file = document.getElementById(`file_${assignmentId}`).files[0];
+            
             if (text) formData.append('text_response', text);
             if (file) formData.append('file', file);
 
-            const res = await fetch(`/api/assignments/submit/${assignmentId}`, {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token },
-                body: formData
-            });
-            const data = await res.json();
-            document.getElementById(`msg_${assignmentId}`).textContent = data.message;
+            try {
+                const res = await fetch(`/api/assignments/submit/${assignmentId}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    body: formData
+                });
+                const data = await res.json();
+                msgDiv.textContent = data.message;
+                msgDiv.style.color = "green";
+            } catch (err) {
+                msgDiv.textContent = "Error submitting assignment.";
+                msgDiv.style.color = "red";
+            }
         }
 
         loadCourse();
